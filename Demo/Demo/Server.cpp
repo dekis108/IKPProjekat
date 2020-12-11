@@ -96,16 +96,23 @@ void Listen() {
         if (value == 0) {
             if (received == DEMOTESTCOUNT) {
 
-                hash_elem_it it = HT_ITERATOR(hashMap);
-                hash_elem_t* e = ht_iterate(&it);
-                while (e != NULL)
-                {
-                    printf("%s = %s \n", e->key, (char*)e->data);
-                    e = ht_iterate(&it);
-                }
+                /*
+                    test valid data
 
-                printf("Server paused.Press any key to continue\n");
-                getchar();
+                    hash_elem_it it = HT_ITERATOR(hashMap);
+                    hash_elem_t* e = ht_iterate(&it);
+                    while (e != NULL)
+                    {
+                        printf("%s = %s \n", e->key, (char*)e->data);
+                        e = ht_iterate(&it);
+                    }
+
+                    printf("Server paused.Press any key to continue\n");
+                    getchar();
+                */
+
+                //TODO: izmeri vreme da se iterira kroz mapu i posalje sve nazad pa obrnuto
+                
             }
         }
         else if (value == SOCKET_ERROR) {
