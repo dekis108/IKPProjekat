@@ -7,12 +7,13 @@
 
 #pragma comment(lib,"WS2_32")
 
-#define DEFAULT_BUFLEN 512
+#define DEFAULT_BUFLEN 1000
 #define DEFAULT_PORT "27016"
 #define MAX_CLIENTS 10
 #define TYPE_STRING_LENGHT 10
 #define TIMEVAL_SEC 0
 #define TIMEVAL_USEC 0
+#define DEMOTESTCOUNT 20
 
 bool InitializeWindowsSockets();
 bool InitializeListenSocket();
@@ -37,9 +38,8 @@ SOCKET listenSocket = INVALID_SOCKET;
 SOCKET acceptedSockets[MAX_CLIENTS];
 addrinfo* resultingAddress = NULL;
 timeval timeVal;
-READING* recvbuf = (READING*)malloc(sizeof(READING));
 LIST* listHead = (LIST*)malloc(sizeof(LIST));
-
+hashtable_t *hashMap = ht_create(DEFAULT_BUFLEN);
 
 int received = 0;
 
@@ -94,7 +94,19 @@ void Listen() {
         int value = select(0, &readfds, NULL, NULL, &timeVal);
 
         if (value == 0) {
-            //do nothing...
+            if (received == DEMOTESTCOUNT) {
+
+                hash_elem_it it = HT_ITERATOR(hashMap);
+                hash_elem_t* e = ht_iterate(&it);
+                while (e != NULL)
+                {
+                    printf("%s = %s \n", e->key, (char*)e->data);
+                    e = ht_iterate(&it);
+                }
+
+                printf("Server paused.Press any key to continue\n");
+                getchar();
+            }
         }
         else if (value == SOCKET_ERROR) {
             //Greska prilikom poziva funkcije
@@ -141,11 +153,19 @@ void Listen() {
 void ProcessMessages() {
     for (int i = 0; i < MAX_CLIENTS; i++) {
         if (FD_ISSET(acceptedSockets[i], &readfds)) {
+            READING* recvbuf = (READING*)malloc(sizeof(READING));
             int iResult = recv(acceptedSockets[i], (char *)recvbuf, DEFAULT_BUFLEN, 0);
             if (iResult > 0)
             {
                 printf("Message received from client: type: %s   val: %d count: %d \n", recvbuf->type, recvbuf->value, ++received);
                 LISTInputElementAtStart(&listHead, recvbuf->value);
+                char* data = (char*)malloc(sizeof(char) * 10);
+                itoa(recvbuf->value, data, 10);
+                printf("%s\n", data);
+                if (ht_put(hashMap, recvbuf->type, data) != NULL) {
+                    printf("Error in ht_put\n");
+                    getchar();
+                }
             }
             else if (iResult == 0)
             {

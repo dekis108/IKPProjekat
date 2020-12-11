@@ -15,7 +15,7 @@
 #define DEFAULT_PORT 27016
 #define ADDRESS "127.0.0.1"
 #define TYPE_STRING_LENGHT 10
-#define DEMOTESTCOUNT 1000
+#define DEMOTESTCOUNT 20
 
 int Init();
 bool InitializeWindowsSockets();
@@ -57,11 +57,12 @@ int main()
 
 bool  SendDemoMessage(int times) {
     READING *msg = (READING*)malloc(sizeof(READING));
-    strcpy_s(msg->type, "xyz");
     msg->value = 13;
 
     for (int i = 0; i < times; ++i) {
-        strcpy_s(msg->type, "xyz");
+        char type[10];
+        itoa(i, type, 10); //itoa = int to ascii
+        strcpy(msg->type, type);
         msg->value = i;
 
         int iResult = send(connectSocket, (const char*)msg, sizeof(READING), 0);
