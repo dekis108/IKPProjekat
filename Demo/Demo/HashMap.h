@@ -6,6 +6,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
  //Hashtable element structure
 typedef struct hash_elem_t {
