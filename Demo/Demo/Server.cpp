@@ -1,6 +1,10 @@
+#define _CRT_NONSTDC_NO_DEPRECATE
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <ws2tcpip.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
 
 #include "LinkedList.h"
 #include "HashMap.h"
@@ -45,6 +49,7 @@ int received = 0;
 
 int main()
 {
+    init_list(&listHead);
     int result = Init();
     if (result) {
         printf("ERROR CODE %d, press any key to exit\n", result);
@@ -95,22 +100,28 @@ void Listen() {
 
         if (value == 0) {
             if (received == DEMOTESTCOUNT) {
-
-                /*
-                    test valid data
+                
+                    clock_t time_1 = clock();
+                   // test valid data
 
                     hash_elem_it it = HT_ITERATOR(hashMap);
                     hash_elem_t* e = ht_iterate(&it);
                     while (e != NULL)
                     {
-                        printf("%s = %s \n", e->key, (char*)e->data);
+                       // printf("%s = %s \n", e->key, (char*)e->data);
                         e = ht_iterate(&it);
                     }
-
+                    clock_t time_2 = clock();
+                    printf("Hash table iterating time: %d ms\n", (time_2 - time_1));
+                    
+                    clock_t time_3 = clock();
+                    LISTTraverseAndPrint(listHead);
+                    clock_t time_4 = clock();
+                    printf("List iterating time: %d ms\n", (time_4 - time_3));
                     printf("Server paused.Press any key to continue\n");
                     getchar();
-                */
-
+                
+                
                 //TODO: izmeri vreme da se iterira kroz mapu i posalje sve nazad pa obrnuto
                 
             }
@@ -200,7 +211,6 @@ int Init() {
     }
 
 
-
     if (InitializeListenSocket() == false) {
         return 2;
     }
@@ -282,4 +292,8 @@ bool BindListenSocket() {
         return false;
     }
     return true;
+}
+
+void SendToClient() {
+
 }

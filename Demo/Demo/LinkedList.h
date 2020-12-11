@@ -32,7 +32,7 @@ void LISTInputElementAtEnd(struct linked_list** head, int value) {
 void LISTTraverseAndPrint(struct linked_list* head) {
     int i = 0;
     while (head != NULL) {
-        printf("Value %d: %d\n", ++i, head->value);
+      //  printf("Value %d: %d\n", ++i, head->value);
         head = head->next;
     }
 }
@@ -60,6 +60,10 @@ void LISTInputElementAtStart(struct linked_list** head, int value) {
     node->value = value;
     node->next = *head;
     *head = node;
+}
+
+void init_list(LIST** head) {
+    *head = NULL;
 }
 
 
