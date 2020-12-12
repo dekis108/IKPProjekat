@@ -54,7 +54,7 @@ int main()
     else {
         printf("An error occured\n");
     }
-    Sleep(1000);
+   // Sleep(1000);
     printf("Receiving...\n");
     while (1) {
         Recieve();
