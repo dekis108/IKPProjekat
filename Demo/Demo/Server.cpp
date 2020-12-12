@@ -42,7 +42,7 @@ SOCKET listenSocket = INVALID_SOCKET;
 SOCKET acceptedSockets[MAX_CLIENTS];
 addrinfo* resultingAddress = NULL;
 timeval timeVal;
-LIST* listHead = (LIST*)malloc(sizeof(LIST));
+LIST* listHead;
 hashtable_t *hashMap = ht_create(DEFAULT_BUFLEN);
 
 int received = 0;
@@ -101,23 +101,27 @@ void Listen() {
         if (value == 0) {
             if (received == DEMOTESTCOUNT) {
                 
-                    clock_t time_1 = clock();
                    // test valid data
 
                     hash_elem_it it = HT_ITERATOR(hashMap);
                     hash_elem_t* e = ht_iterate(&it);
+
+
+                    clock_t time_1 = clock();
                     while (e != NULL)
                     {
-                       // printf("%s = %s \n", e->key, (char*)e->data);
+                        printf("%s = %s \n", e->key, (char*)e->data);
                         e = ht_iterate(&it);
                     }
                     clock_t time_2 = clock();
-                    printf("Hash table iterating time: %d ms\n", (time_2 - time_1));
+                    double cpu_time_used1 = ((double)(time_2 - time_1)) / CLOCKS_PER_SEC;
+                    printf("Hash table iterating time: %f ms\n", cpu_time_used1);
                     
                     clock_t time_3 = clock();
                     LISTTraverseAndPrint(listHead);
                     clock_t time_4 = clock();
-                    printf("List iterating time: %d ms\n", (time_4 - time_3));
+                    double cpu_time_used2 = ((double)(time_4 - time_3)) / CLOCKS_PER_SEC;
+                    printf("List iterating time: %f ms\n", cpu_time_used2);
                     printf("Server paused.Press any key to continue\n");
                     getchar();
                 
