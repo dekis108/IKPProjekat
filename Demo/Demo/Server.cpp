@@ -120,7 +120,7 @@ void Listen() {
                     while (listHead != NULL && listHead != nullptr) {
                         //  printf("Value %d: %d\n", ++i, head->value);
                         printf("SENT: %d  \n", listHead->value.value);
-                        SendToClient(acceptedSockets[0], listHead);
+                        SendToClient(acceptedSockets[0], &(listHead->value));
                         listHead = listHead->next;
                     }
                     clock_t time_4 = clock();
