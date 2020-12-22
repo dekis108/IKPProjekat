@@ -4,14 +4,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "ReadingStructure.h"
 
 typedef struct linked_list {
     struct linked_list* next;
-    int value;
+    READING value;
 }LIST;
 
 
-void LISTInputElementAtEnd(struct linked_list** head, int value) {
+void LISTInputElementAtEnd(struct linked_list** head, READING value) {
     if (*head == NULL) {
         *head = (struct linked_list*)malloc(sizeof(struct linked_list));
         (*head)->next = NULL;
@@ -32,14 +33,14 @@ void LISTInputElementAtEnd(struct linked_list** head, int value) {
 void LISTTraverseAndPrint(struct linked_list* head) {
     int i = 0;
     while (head != NULL) {
-      //  printf("Value %d: %d\n", ++i, head->value);
+        printf("Value %d: %d\n", ++i, head->value.value);
         head = head->next;
     }
 }
 
 int LISTFindValue(struct linked_list* head, int value) {
     while (head != NULL) {
-        if (head->value == value) {
+        if (head->value.value == value) {
             return 1;
         }
         head = head->next;
@@ -48,7 +49,7 @@ int LISTFindValue(struct linked_list* head, int value) {
     return 0;
 }
 
-void LISTInputElementAtStart(struct linked_list** head, int value) {
+void LISTInputElementAtStart(struct linked_list** head, READING value) {
     if (*head == NULL) {
         *head = (struct linked_list*)malloc(sizeof(struct linked_list));
         (*head)->next = NULL;

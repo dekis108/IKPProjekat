@@ -8,6 +8,8 @@
 #include <string.h>
 #include <stdio.h>
 
+#include "ReadingStructure.h"
+
  //Hashtable element structure
 typedef struct hash_elem_t {
 	struct hash_elem_t* next; // Next element in case of a collision

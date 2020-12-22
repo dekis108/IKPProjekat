@@ -24,6 +24,7 @@ bool InitializeWindowsSockets();
 bool CreateSocket();
 bool Connect();
 bool SendDemoMessage(int);
+void Recieve();
 
 SOCKET connectSocket = INVALID_SOCKET;
 sockaddr_in serverAddress;
@@ -52,6 +53,12 @@ int main()
     }
     else {
         printf("An error occured\n");
+    }
+   // Sleep(1000);
+    printf("Receiving...\n");
+    while (1) {
+        Recieve();
+       // Sleep(10);
     }
     getchar();
 
@@ -130,4 +137,18 @@ bool InitializeWindowsSockets() {
         return false;
     }
     return true;
+}
+
+void Recieve() {
+    READING* recvbuf = (READING*)malloc(sizeof(READING));
+    int iResult = recv(connectSocket, (char*)recvbuf, DEFAULT_BUFLEN, 0);
+    if (iResult > 0)
+    {
+        printf("Msg value: %d\n", recvbuf->value);
+    }
+    else 
+    {
+        // there was an error during recv
+        printf("recv failed with error: %d\n", WSAGetLastError());
+    }
 }

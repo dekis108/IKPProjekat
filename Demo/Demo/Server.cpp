@@ -8,6 +8,7 @@
 
 #include "LinkedList.h"
 #include "HashMap.h"
+#include "ReadingStructure.h"
 
 #pragma comment(lib,"WS2_32")
 
@@ -27,14 +28,10 @@ int Init();
 void Listen();
 void SetAcceptedSocketsInvalid();
 void ProcessMessages();
+void SendToClient(SOCKET connectSocket, void* msg);
 
 
 
-typedef struct _msgFormat {
-    char type[TYPE_STRING_LENGHT];
-    int value;
-
-}READING;
 
 
 fd_set readfds;
@@ -101,27 +98,30 @@ void Listen() {
         if (value == 0) {
             if (received == DEMOTESTCOUNT) {
                 
+                    clock_t time_1 = clock();
                    // test valid data
 
                     hash_elem_it it = HT_ITERATOR(hashMap);
                     hash_elem_t* e = ht_iterate(&it);
-
-
-                    clock_t time_1 = clock();
                     while (e != NULL)
                     {
-                        printf("%s = %s \n", e->key, (char*)e->data);
+                       // printf("%s = %s \n", e->key, (char*)e->data);
                         e = ht_iterate(&it);
+                        
                     }
                     clock_t time_2 = clock();
-                    double cpu_time_used1 = ((double)(time_2 - time_1)) / CLOCKS_PER_SEC;
-                    printf("Hash table iterating time: %f ms\n", cpu_time_used1);
+                    printf("Hash table iterating time: %d ms\n", (time_2 - time_1));
                     
                     clock_t time_3 = clock();
-                    LISTTraverseAndPrint(listHead);
+                    //LISTTraverseAndPrint(listHead);
+                    while (listHead != NULL && listHead != nullptr) {
+                        //  printf("Value %d: %d\n", ++i, head->value);
+                        printf("SENT: %d  \n", listHead->value.value);
+                        SendToClient(acceptedSockets[0], &(listHead->value));
+                        listHead = listHead->next;
+                    }
                     clock_t time_4 = clock();
-                    double cpu_time_used2 = ((double)(time_4 - time_3)) / CLOCKS_PER_SEC;
-                    printf("List iterating time: %f ms\n", cpu_time_used2);
+                    printf("List iterating time: %d ms\n", (time_4 - time_3));
                     printf("Server paused.Press any key to continue\n");
                     getchar();
                 
@@ -180,11 +180,11 @@ void ProcessMessages() {
             if (iResult > 0)
             {
                 printf("Message received from client: type: %s   val: %d count: %d \n", recvbuf->type, recvbuf->value, ++received);
-                LISTInputElementAtStart(&listHead, recvbuf->value);
+                LISTInputElementAtStart(&listHead, *recvbuf);
                 char* data = (char*)malloc(sizeof(char) * 10);
                 itoa(recvbuf->value, data, 10);
                 printf("%s\n", data);
-                if (ht_put(hashMap, recvbuf->type, data) != NULL) {
+                if (ht_put(hashMap, recvbuf->type, recvbuf) != NULL) {
                     printf("Error in ht_put\n");
                     getchar();
                 }
@@ -298,6 +298,15 @@ bool BindListenSocket() {
     return true;
 }
 
-void SendToClient() {
-
+void SendToClient(SOCKET connectSocket, void * msg) {
+   
+        int iResult = send(connectSocket, (const char*)msg, sizeof(READING), 0);
+        if (iResult == SOCKET_ERROR)
+        {
+            printf("send failed with error: %d\n", WSAGetLastError());
+            closesocket(connectSocket);
+            WSACleanup();
+            
+        }
+        Sleep(10);
 }
