@@ -153,6 +153,11 @@
   <ItemGroup>
     <ClCompile Include="TCPLib.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DataStructures\DataStructures.vcxproj">
+      <Project>{c1ca72d7-3b9c-4cf2-94dc-3733121627a3}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -6,9 +6,8 @@
 #include <stdio.h>
 #include <time.h>
 
-#include "LinkedList.h"
-#include "HashMap.h"
-#include "ReadingStructure.h"
+#include "../DataStructures/LinkedList.h";
+#include "../DataStructures/ReadingStructure.h";
 
 #pragma comment(lib,"WS2_32")
 
@@ -40,7 +39,7 @@ SOCKET acceptedSockets[MAX_CLIENTS];
 addrinfo* resultingAddress = NULL;
 timeval timeVal;
 LIST* listHead;
-hashtable_t *hashMap = ht_create(DEFAULT_BUFLEN);
+//hashtable_t *hashMap = ht_create(DEFAULT_BUFLEN);
 
 int received = 0;
 
@@ -100,7 +99,7 @@ void Listen() {
                 
                     clock_t time_1 = clock();
                    // test valid data
-
+                    /*
                     hash_elem_it it = HT_ITERATOR(hashMap);
                     hash_elem_t* e = ht_iterate(&it);
                     while (e != NULL)
@@ -111,7 +110,7 @@ void Listen() {
                     }
                     clock_t time_2 = clock();
                     printf("Hash table iterating time: %d ms\n", (time_2 - time_1));
-                    
+                    */
                     clock_t time_3 = clock();
                     //LISTTraverseAndPrint(listHead);
                     while (listHead != NULL && listHead != nullptr) {
@@ -172,42 +171,6 @@ void Listen() {
     } 
 }
 
-void ProcessMessages() {
-    for (int i = 0; i < MAX_CLIENTS; i++) {
-        if (FD_ISSET(acceptedSockets[i], &readfds)) {
-            READING* recvbuf = (READING*)malloc(sizeof(READING));
-            int iResult = recv(acceptedSockets[i], (char *)recvbuf, DEFAULT_BUFLEN, 0);
-            if (iResult > 0)
-            {
-                printf("Message received from client: type: %s   val: %d count: %d \n", recvbuf->type, recvbuf->value, ++received);
-                LISTInputElementAtStart(&listHead, *recvbuf);
-                char* data = (char*)malloc(sizeof(char) * 10);
-                itoa(recvbuf->value, data, 10);
-                printf("%s\n", data);
-                if (ht_put(hashMap, recvbuf->type, recvbuf) != NULL) {
-                    printf("Error in ht_put\n");
-                    getchar();
-                }
-            }
-            else if (iResult == 0)
-            {
-                // connection was closed gracefully
-                printf("Connection with client closed.\n");
-                
-                closesocket(acceptedSockets[i]);
-                acceptedSockets[i] = INVALID_SOCKET;
-            }
-            else
-            {
-                // there was an error during recv
-                printf("recv failed with error: %d\n", WSAGetLastError());
-                closesocket(acceptedSockets[i]);
-                acceptedSockets[i] = INVALID_SOCKET;
-            }
-        }
-    }
-}
-
 int Init() {
     if (InitializeWindowsSockets() == false)
     {
@@ -229,6 +192,48 @@ int Init() {
 
     return 0;
 }
+
+
+
+void ProcessMessages() {
+    for (int i = 0; i < MAX_CLIENTS; i++) {
+        if (FD_ISSET(acceptedSockets[i], &readfds)) {
+            READING* recvbuf = (READING*)malloc(sizeof(READING));
+            int iResult = recv(acceptedSockets[i], (char*)recvbuf, DEFAULT_BUFLEN, 0);
+            if (iResult > 0)
+            {
+                printf("Message received from client: type: %s   val: %d count: %d \n", recvbuf->type, recvbuf->value, ++received);
+                LISTInputElementAtStart(&listHead, *recvbuf);
+                char* data = (char*)malloc(sizeof(char) * 10);
+                itoa(recvbuf->value, data, 10);
+                printf("%s\n", data);
+
+                /*
+                if (ht_put(hashMap, recvbuf->type, recvbuf) != NULL) {
+                    printf("Error in ht_put\n");
+                    getchar();
+                }
+                */
+            }
+            else if (iResult == 0)
+            {
+                // connection was closed gracefully
+                printf("Connection with client closed.\n");
+
+                closesocket(acceptedSockets[i]);
+                acceptedSockets[i] = INVALID_SOCKET;
+            }
+            else
+            {
+                // there was an error during recv
+                printf("recv failed with error: %d\n", WSAGetLastError());
+                closesocket(acceptedSockets[i]);
+                acceptedSockets[i] = INVALID_SOCKET;
+            }
+        }
+    }
+}
+
 
 void SetNonBlocking() {
     unsigned long mode = 1;
@@ -259,10 +264,10 @@ bool InitializeListenSocket() {
     addrinfo hints;
 
     memset(&hints, 0, sizeof(hints));
-    hints.ai_family = AF_INET;      
+    hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
-    hints.ai_protocol = IPPROTO_TCP; 
-    hints.ai_flags = AI_PASSIVE;     
+    hints.ai_protocol = IPPROTO_TCP;
+    hints.ai_flags = AI_PASSIVE;
 
     int iResult = getaddrinfo(NULL, DEFAULT_PORT, &hints, &resultingAddress);
     if (iResult != 0)
@@ -272,7 +277,7 @@ bool InitializeListenSocket() {
         return false;
     }
 
-    listenSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP); 
+    listenSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
     if (listenSocket == INVALID_SOCKET)
     {
@@ -296,17 +301,4 @@ bool BindListenSocket() {
         return false;
     }
     return true;
-}
-
-void SendToClient(SOCKET connectSocket, void * msg) {
-   
-        int iResult = send(connectSocket, (const char*)msg, sizeof(READING), 0);
-        if (iResult == SOCKET_ERROR)
-        {
-            printf("send failed with error: %d\n", WSAGetLastError());
-            closesocket(connectSocket);
-            WSACleanup();
-            
-        }
-        Sleep(10);
 }
