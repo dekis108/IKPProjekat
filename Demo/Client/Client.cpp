@@ -33,7 +33,7 @@ typedef struct _msgFormat {
     char type[TYPE_STRING_LENGHT];
     int value;
 
-}READING;
+}Measurment;
 
 int main()
 {
@@ -65,7 +65,7 @@ int main()
 }
 
 bool  SendDemoMessage(int times) {
-    READING *msg = (READING*)malloc(sizeof(READING));
+    Measurment *msg = (Measurment*)malloc(sizeof(Measurment));
     msg->value = 13;
 
     for (int i = 0; i < times; ++i) {
@@ -74,7 +74,7 @@ bool  SendDemoMessage(int times) {
         strcpy(msg->type, type);
         msg->value = i;
 
-        int iResult = send(connectSocket, (const char*)msg, sizeof(READING), 0);
+        int iResult = send(connectSocket, (const char*)msg, sizeof(Measurment), 0);
         if (iResult == SOCKET_ERROR)
         {
             printf("send failed with error: %d\n", WSAGetLastError());
@@ -140,7 +140,7 @@ bool InitializeWindowsSockets() {
 }
 
 void Recieve() {
-    READING* recvbuf = (READING*)malloc(sizeof(READING));
+    Measurment* recvbuf = (Measurment*)malloc(sizeof(Measurment));
     int iResult = recv(connectSocket, (char*)recvbuf, DEFAULT_BUFLEN, 0);
     if (iResult > 0)
     {

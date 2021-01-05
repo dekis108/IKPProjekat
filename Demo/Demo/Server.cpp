@@ -198,7 +198,7 @@ int Init() {
 void ProcessMessages() {
     for (int i = 0; i < MAX_CLIENTS; i++) {
         if (FD_ISSET(acceptedSockets[i], &readfds)) {
-            READING* recvbuf = (READING*)malloc(sizeof(READING));
+            Measurment* recvbuf = (Measurment*)malloc(sizeof(Measurment));
             int iResult = recv(acceptedSockets[i], (char*)recvbuf, DEFAULT_BUFLEN, 0);
             if (iResult > 0)
             {

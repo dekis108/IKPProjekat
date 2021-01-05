@@ -21,7 +21,7 @@
 
 void SendToClient(SOCKET connectSocket, void* msg) {
 
-    int iResult = send(connectSocket, (const char*)msg, sizeof(READING), 0);
+    int iResult = send(connectSocket, (const char*)msg, sizeof(Measurment), 0);
     if (iResult == SOCKET_ERROR)
     {
         printf("send failed with error: %d\n", WSAGetLastError());

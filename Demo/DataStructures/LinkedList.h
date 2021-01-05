@@ -8,11 +8,11 @@
 
 typedef struct linked_list {
     struct linked_list* next;
-    READING value;
+    Measurment value;
 }LIST;
 
 
-void LISTInputElementAtEnd(struct linked_list** head, READING value) {
+void LISTInputElementAtEnd(struct linked_list** head, Measurment value) {
     if (*head == NULL) {
         *head = (struct linked_list*)malloc(sizeof(struct linked_list));
         (*head)->next = NULL;
@@ -49,7 +49,7 @@ int LISTFindValue(struct linked_list* head, int value) {
     return 0;
 }
 
-void LISTInputElementAtStart(struct linked_list** head, READING value) {
+void LISTInputElementAtStart(struct linked_list** head, Measurment value) {
     if (*head == NULL) {
         *head = (struct linked_list*)malloc(sizeof(struct linked_list));
         (*head)->next = NULL;

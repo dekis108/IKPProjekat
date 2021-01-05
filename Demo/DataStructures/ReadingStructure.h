@@ -1,9 +1,10 @@
 #pragma once
 
-#define TYPE_STRING_LENGHT 10
+#define STRING_LENGHT 10
 
 typedef struct _msgFormat {
-    char type[TYPE_STRING_LENGHT];
+    char topic[STRING_LENGHT];
+    char type[STRING_LENGHT];
     int value;
 
-}READING;
+}Measurment;
